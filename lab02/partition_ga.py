@@ -18,7 +18,7 @@ def fitness_func(solution, solution_idx):
 
 fitness_function = fitness_func
 
-#ile chromsomów w populacji
+#ile chromsomów w populacji - tablic z 0 i 1
 #ile genow ma chromosom
 sol_per_pop = 10
 num_genes = len(S)
@@ -39,8 +39,8 @@ crossover_type = "single_point"
 
 #mutacja ma dzialac na ilu procent genow?
 #trzeba pamietac ile genow ma chromosom
-mutation_type = "random"
-mutation_percent_genes = 8
+mutation_type = "random"  # zamiana losowego genu
+mutation_percent_genes = 8  # razy długość chromosomu troche powyżej 100 8 * 15
 
 #inicjacja algorytmu z powyzszymi parametrami wpisanymi w atrybuty
 ga_instance = pygad.GA(gene_space=gene_space,
