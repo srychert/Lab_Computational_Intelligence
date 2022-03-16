@@ -17,7 +17,7 @@ gene_space = [0, 1]
 
 # definiujemy funkcję fitness
 def fitness_func(solution, solution_idx):
-    if numpy.sum(solution * slimak["waga"]) >= 25:
+    if numpy.sum(solution * slimak["waga"]) > 25:
         return 0
     return numpy.sum(solution * slimak["wartosc"])
 
