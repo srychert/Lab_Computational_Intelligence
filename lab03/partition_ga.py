@@ -1,8 +1,7 @@
-import copy
-
 import pygad
 import numpy
 import time
+import pprint
 
 S = [1, 2, 3, 6, 10, 17, 25, 29, 30, 41, 51, 60, 70, 79, 80]
 
@@ -23,14 +22,14 @@ fitness_function = fitness_func
 
 #ile chromsomów w populacji
 #ile genow ma chromosom
-sol_per_pop = 10
+sol_per_pop = 30
 num_genes = len(S)
 
 #ile wylaniamy rodzicow do "rozmanazania" (okolo 50% populacji)
 #ile pokolen
 #ilu rodzicow zachowac (kilka procent)
 num_parents_mating = 5
-num_generations = 30
+num_generations = 50
 keep_parents = 2
 
 #jaki typ selekcji rodzicow?
@@ -57,19 +56,36 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        crossover_type=crossover_type,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                       stop_criteria=["reach_0", "saturate_10"])
+                       stop_criteria=["reach_0"])
 
-timeResults = {"time": [], "numOfGenerations": []}
+timeResults = {"time": [], "numOfGenerations": [], "fitnessValueBest": [], "prediction": []}
 for x in range(10):
+    ga_instance = pygad.GA(gene_space=gene_space,
+                           num_generations=num_generations,
+                           num_parents_mating=num_parents_mating,
+                           fitness_func=fitness_function,
+                           sol_per_pop=sol_per_pop,
+                           num_genes=num_genes,
+                           parent_selection_type=parent_selection_type,
+                           keep_parents=keep_parents,
+                           crossover_type=crossover_type,
+                           mutation_type=mutation_type,
+                           mutation_percent_genes=mutation_percent_genes,
+                           stop_criteria=["reach_0"])
+
     #ga_instance_copy = copy.deepcopy(ga_instance)
     #uruchomienie algorytmu
     start = time.time()
     ga_instance.run()
     end = time.time()
+    solution, solution_fitness, solution_idx = ga_instance.best_solution()
+    prediction = numpy.sum(S * solution)
     timeResults["time"].append(round(end - start, 5))
     timeResults["numOfGenerations"].append(ga_instance.generations_completed)
+    timeResults["fitnessValueBest"].append(solution_fitness)
+    timeResults["prediction"].append(prediction)
 
-print(timeResults)
+pprint.pprint(timeResults)
 
 #podsumowanie: najlepsze znalezione rozwiazanie (chromosom+ocena)
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
