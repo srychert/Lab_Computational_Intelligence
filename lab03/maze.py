@@ -3,6 +3,7 @@ import numpy
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import cv2
+import math
 
 # wczytaj obraz jako 2d numpy array w odcieniach szarości (0-255)
 img = cv2.imread("maze.jpeg", 0)
@@ -50,7 +51,7 @@ def check_if_legal(move, curr_pos):
 def calcDistance(start, end):
     x_start, y_start = start
     x_end, y_end = end
-    return abs(x_start - x_end) + abs(y_start - y_end)
+    return math.sqrt(pow(x_start - x_end, 2) + pow(y_start - y_end, 2))
 
 
 #definiujemy funkcję fitness
@@ -157,7 +158,7 @@ def animate(i):
 
 
 # Uruchumioenie animacji
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=30,
+anim = animation.FuncAnimation(fig, animate, init_func=init, frames=num_genes,
                                interval=100)
 plt.show()
 
