@@ -10,6 +10,8 @@ img = cv2.imread("maze.jpeg", 0)
 img[img > 0] = 1
 # kopia pomocnicza
 S = numpy.copy(img)
+x_max = S.shape[0] - 1
+y_max = S.shape[1] - 1
 # Początek i koniec labirytnu
 start = [1, 1]
 end = [10, 10]
@@ -65,7 +67,7 @@ def fitness_func(solution, solution_idx):
             current = [current[0]+moves[move][0], current[1]+moves[move][1]]
         else:
             # jeżeli ruch nie jest dozwolony nakładamy karę
-            points += -calcDistance(start, end)
+            points += -(calcDistance(current, end)**2/calcDistance([0, 0], [x_max, y_max]))
             break
     return -calcDistance(current, end) + points
 
