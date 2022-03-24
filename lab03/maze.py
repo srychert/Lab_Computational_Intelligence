@@ -107,17 +107,16 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        crossover_type=crossover_type,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                       stop_criteria=["reach_0"])
+                       stop_criteria=["reach_0", "saturate_200"])
 ga_instance.run()
 
 #wartości rozwiązania:
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
 
 
-img[1][1] = 2
-img[10][10] = 2
-x_c = 1
-y_c = 1
+img[start[0]][start[1]] = 2
+img[end[0]][end[1]] = 2
+x_c, y_c = start
 route = []
 number_of_moves = 0
 for moved in solution:
