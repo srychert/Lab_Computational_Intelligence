@@ -2,6 +2,7 @@ import pygad
 import numpy
 import time
 import pprint
+from copy import deepcopy
 
 S = [1, 2, 3, 6, 10, 17, 25, 29, 30, 41, 51, 60, 70, 79, 80]
 
@@ -60,32 +61,23 @@ ga_instance = pygad.GA(gene_space=gene_space,
 
 timeResults = {"time": [], "numOfGenerations": [], "fitnessValueBest": [], "prediction": []}
 for x in range(10):
-    ga_instance = pygad.GA(gene_space=gene_space,
-                           num_generations=num_generations,
-                           num_parents_mating=num_parents_mating,
-                           fitness_func=fitness_function,
-                           sol_per_pop=sol_per_pop,
-                           num_genes=num_genes,
-                           parent_selection_type=parent_selection_type,
-                           keep_parents=keep_parents,
-                           crossover_type=crossover_type,
-                           mutation_type=mutation_type,
-                           mutation_percent_genes=mutation_percent_genes,
-                           stop_criteria=["reach_0"])
+    ga_copy = deepcopy(ga_instance)
 
     #ga_instance_copy = copy.deepcopy(ga_instance)
     #uruchomienie algorytmu
     start = time.time()
-    ga_instance.run()
+    ga_copy.run()
     end = time.time()
-    solution, solution_fitness, solution_idx = ga_instance.best_solution()
+    solution, solution_fitness, solution_idx = ga_copy.best_solution()
     prediction = numpy.sum(S * solution)
     timeResults["time"].append(round(end - start, 5))
-    timeResults["numOfGenerations"].append(ga_instance.generations_completed)
+    timeResults["numOfGenerations"].append(ga_copy.generations_completed)
     timeResults["fitnessValueBest"].append(solution_fitness)
     timeResults["prediction"].append(prediction)
 
-pprint.pprint(timeResults)
+pprint.pprint(timeResults, width=100)
+print("\n")
+ga_instance.run()
 
 #podsumowanie: najlepsze znalezione rozwiazanie (chromosom+ocena)
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
