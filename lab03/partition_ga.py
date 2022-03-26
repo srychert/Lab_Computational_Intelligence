@@ -75,6 +75,7 @@ for x in range(10):
     timeResults["fitnessValueBest"].append(solution_fitness)
     timeResults["prediction"].append(prediction)
 
+timeResults["avg_time"] = round(sum(timeResults["time"])/len(timeResults["time"]), 5)
 pprint.pprint(timeResults, width=100)
 print("\n")
 ga_instance.run()
