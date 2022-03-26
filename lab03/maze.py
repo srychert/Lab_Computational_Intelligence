@@ -132,6 +132,14 @@ for x in range(10):
     timeResults["numOfGenerations"].append(ga_copy.generations_completed)
     timeResults["fitnessValueBest"].append(solution_fitness)
 
+avg = 0
+successful_runs_times = []
+for idx, fit in enumerate(timeResults["fitnessValueBest"]):
+    if fit == 0:
+        successful_runs_times.append(timeResults["time"][idx])
+
+avg = avg if len(successful_runs_times) == 0 else round(sum(successful_runs_times) / len(successful_runs_times), 5)
+timeResults["avgOfSuccessfulRuns"] = avg
 pprint.pprint(timeResults, width=200)
 print("\n")
 ga_instance.run()
