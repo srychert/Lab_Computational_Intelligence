@@ -3,6 +3,9 @@ import numpy
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import cv2
+import time
+import pprint
+from copy import deepcopy
 
 # wczytaj obraz jako 2d numpy array w odcieniach szarości (0-255)
 img = cv2.imread("maze.jpeg", 0)
@@ -28,19 +31,21 @@ moves = {
 gene_space = [0, 1, 2, 3]
 
 # Sprawdamy czy następna pozycja po wykonaniu ruchu jest dozwolona
-def check_if_legal(move, curr_pos):
-    x_move, y_move = move
-    x_curr, y_curr = curr_pos
+def check_out_of_bounds(x_move, y_move, x_curr, y_curr):
     x_new = x_move + x_curr
     y_new = y_move + y_curr
-
     # check if move in bounds
     if x_new < 0 or y_new < 0:
-        return False
+        return True
     if x_new >= S.shape[0]:
-        return False
+        return True
     if y_new >= S.shape[1]:
-        return False
+        return True
+    return False
+
+def check_if_legal(x_move, y_move, x_curr, y_curr):
+    x_new = x_move + x_curr
+    y_new = y_move + y_curr
 
     # check if move is on the black
     if S[x_new][y_new] == 0:
@@ -63,7 +68,11 @@ def fitness_func(solution, solution_idx):
         # jeżeli dotarliśmy do końca nie sprawdzamy reszty
         if calcDistance(current, end) == 0:
             break
-        if check_if_legal(moves[move], current):
+        if check_out_of_bounds(*moves[move], *current):
+            # duża kara za wyjście poza labirynt
+            points = -(2**31-1)
+            break
+        if check_if_legal(*moves[move], *current):
             current = [current[0]+moves[move][0], current[1]+moves[move][1]]
         else:
             # jeżeli ruch nie jest dozwolony nakładamy karę
@@ -110,6 +119,21 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
                        stop_criteria=["reach_0", "saturate_200"])
+
+timeResults = {"time": [], "numOfGenerations": [], "fitnessValueBest": []}
+for x in range(10):
+    ga_copy = deepcopy(ga_instance)
+    #uruchomienie algorytmu
+    start_time = time.time()
+    ga_copy.run()
+    end_time = time.time()
+    solution, solution_fitness, solution_idx = ga_copy.best_solution()
+    timeResults["time"].append(round(end_time - start_time, 5))
+    timeResults["numOfGenerations"].append(ga_copy.generations_completed)
+    timeResults["fitnessValueBest"].append(solution_fitness)
+
+pprint.pprint(timeResults, width=200)
+print("\n")
 ga_instance.run()
 
 #wartości rozwiązania:
