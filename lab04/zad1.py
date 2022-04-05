@@ -20,4 +20,6 @@ cost_history = optimizer.cost_history
 # Plot!
 plot_cost_history(cost_history)
 pprint.pprint(cost_history, indent=4)
+iteration_of_find = cost_history.index(cost_history[-1]) + 1
+print("Minimum found on iteration number:", iteration_of_find)
 plt.show()
