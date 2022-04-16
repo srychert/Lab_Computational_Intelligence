@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 import json
 
@@ -57,7 +58,7 @@ class SimpleTableInput(tk.Frame):
 class Input(tk.Frame):
     def __init__(self, parent, width, length):
         tk.Frame.__init__(self, parent)
-        self.table = SimpleTableInput(self, width, length)
+        self.table = SimpleTableInput(self, length, width)
         self.submit = tk.Button(self, text="Submit", command=self.on_submit)
         self.table.pack(side="top", fill="both", expand=True)
         self.submit.pack(side="bottom")
@@ -73,8 +74,9 @@ class Input(tk.Frame):
         json_str = json.dumps(puzzles)
         with open("puzzles.json", "w") as f:
             f.write(json_str)
+        sys.exit(0)
 
 
 root = tk.Tk()
-Input(root, 4, 4).pack(side="top", fill="both", expand=True)
+Input(root, 9, 9).pack(side="top", fill="both", expand=True)
 root.mainloop()
