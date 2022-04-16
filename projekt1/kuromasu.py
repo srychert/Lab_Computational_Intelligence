@@ -1,56 +1,32 @@
 import numpy as np
 import pygad
+import json
 
-S = (11,11)
-board = np.zeros(S[0]**2)
-# initail board state
-numbers = {
-    (2, 0): 9,
-    (8, 0): 8,
-    (8, 1): 7,
-    (4, 2): 12,
-    (10, 2): 16,
-    (0, 3): 9,
-    (1, 4): 10,
-    (2, 5): 12,
-    (4, 5): 8,
-    (6, 5): 11,
-    (8, 5): 3,
-    (9, 6): 3,
-    (10, 7): 3,
-    (0, 8): 7,
-    (6, 8): 2,
-    (2, 9): 7,
-    (2, 10): 2,
-    (8, 10): 5,
-}
-for key, value in numbers.items():
-    board[key[0]*S[0] + key[1]] = value
-print(board)
+puzzles = {}
+with open("puzzles.json", "r") as f:
+    puzzles = json.load(f)
 
-inital_population = []
-for i in range(board.shape[0]):
-    inital_population.append(board.flatten())
 
-# print(inital_population)
+board = np.array(puzzles["0"])
 
 #definiujemy parametry chromosomu
-#geny to liczby: 0 lub 1
+#geny to liczby: -1 lub 0
 gene_space = [-1, 0]
 
 
 #definiujemy funkcję fitness
 def fitness_func(solution, solution_idx):
-    # for idx, v in enumerate(solution):
-    #     if
     return 0
 
 fitness_function = fitness_func
 
-#ile chromsomów w populacji - tablic z 0 i 1
+#ile chromsomów w populacji - tablic z -1 i 0
 #ile genow ma chromosom
 sol_per_pop = 5
-num_genes = len(board)**2
+num_genes = 0
+for i in board.flatten():
+    if i == 0:
+        num_genes += 1
 
 #ile wylaniamy rodzicow do "rozmanazania" (okolo 50% populacji)
 #ile pokolen
@@ -69,7 +45,7 @@ crossover_type = "single_point"
 #mutacja ma dzialac na ilu procent genow?
 #trzeba pamietac ile genow ma chromosom
 mutation_type = "random"  # zamiana losowego genu
-mutation_percent_genes = 1  # razy długość chromosomu troche powyżej 100 8 * 15
+mutation_percent_genes = 9  # razy długość chromosomu troche powyżej 100 8 * 15
 
 #inicjacja algorytmu z powyzszymi parametrami wpisanymi w atrybuty
 ga_instance = pygad.GA(gene_space=gene_space,
