@@ -11,7 +11,7 @@ with open("puzzles.json", "r") as f:
     puzzles = json.load(f)
 
 # from 0 to 5
-board = np.array(puzzles["5"])
+board = np.array(puzzles["6"])
 
 #definiujemy parametry chromosomu
 #geny to liczby: -1 lub 0
@@ -73,7 +73,7 @@ def whiteCellsPoints(x, idx, board_s):
         row_sides, row_sum = whiteConnected(row, idx[1])
         col_sides, col_sum = whiteConnected(column, idx[0])
         if row_sum + col_sum == row_sides + col_sides:
-            points += 2
+            points += 1
 
     return points
 
@@ -111,15 +111,10 @@ def fitness_func(solution, solution_idx):
     for idx, x in np.ndenumerate(board_s):
         points -= whiteCellsPoints(x, idx, board_s)
         points -= blackCellsPoints(x, idx, board_s)
-        dfs.addNeighbour(x, idx, board_s)
 
-    dfs.dfs(first)
-    expected = len(dfs.graph)
-    actual = len(dfs.visited)
+    islands = dfs.getNumberOfIslands(board_s, first)
+    points -= islands - 1
 
-    if points == 0 and expected != actual:
-        points -= (abs(expected - actual)/expected) + 1
-        # points -= expected/actual
     return points
 
 fitness_function = fitness_func
@@ -165,7 +160,7 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        crossover_type=crossover_type,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                       stop_criteria=["reach_0", "saturate_20"])
+                       stop_criteria=["reach_0", "saturate_25"])
 
 
 def run(tries):

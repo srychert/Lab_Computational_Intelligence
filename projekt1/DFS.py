@@ -1,3 +1,5 @@
+import numpy as np
+
 class DFS():
     def __init__(self):
         self.graph = {}
@@ -34,3 +36,23 @@ class DFS():
             self.visited.add(node)
             for neighbour in self.graph[node]:
                 self.dfs(neighbour)
+
+    def getNumberOfIslands(self, board_s, first):
+        for idx, x in np.ndenumerate(board_s):
+            self.addNeighbour(x, idx, board_s)
+
+        islands = 0
+
+        while len(self.graph) != len(self.visited):
+            start = first
+            stop = False
+
+            for idx, x in np.ndenumerate(board_s):
+                if idx not in self.visited and x != -1 and not stop:
+                    start = idx
+                    stop = True
+
+            self.dfs(start)
+            islands += 1
+
+        return islands
