@@ -145,7 +145,7 @@ crossover_type = "single_point"
 #mutacja ma dzialac na ilu procent genow?
 #trzeba pamietac ile genow ma chromosom
 mutation_type = "random"  # zamiana losowego genu
-mutation_percent_genes = round(110 / num_genes, 3)  # razy długość chromosomu troche powyżej 100
+mutation_percent_genes = round(120 / num_genes, 3)  # razy długość chromosomu troche powyżej 100
 
 #inicjacja algorytmu z powyzszymi parametrami wpisanymi w atrybuty
 ga_instance = pygad.GA(gene_space=gene_space,
