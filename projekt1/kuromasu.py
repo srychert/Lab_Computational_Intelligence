@@ -10,8 +10,8 @@ puzzles = {}
 with open("puzzles.json", "r") as f:
     puzzles = json.load(f)
 
-# from 0 to 5
-board = np.array(puzzles["6"])
+# from 0 to 8
+board = np.array(puzzles["4"])
 
 #definiujemy parametry chromosomu
 #geny to liczby: -1 lub 0
@@ -121,7 +121,7 @@ fitness_function = fitness_func
 
 #ile chromsomów w populacji - tablic z -1 i 0
 #ile genow ma chromosom
-sol_per_pop = 1000
+sol_per_pop = board.shape[0] * board.shape[1] * 10
 num_genes = 0
 for i in board.flatten():
     if i == 0:
@@ -131,9 +131,12 @@ for i in board.flatten():
 #ile wylaniamy rodzicow do "rozmanazania" 1/4 populacji
 #ile pokolen
 #ilu rodzicow zachowac (kilka procent)
-num_parents_mating = 250
-num_generations = 100
-keep_parents = 2
+num_parents_mating = int(0.25 * sol_per_pop)
+num_generations = int(2 * sol_per_pop)
+keep_parents = int(0.01 * sol_per_pop)
+s = int(0.02 * num_generations)
+saturate = "saturate_{s}".format(s = 15 if s < 15 else s)
+print(sol_per_pop, num_genes, num_parents_mating, num_generations, keep_parents, saturate)
 
 #jaki typ selekcji rodzicow?
 #sss = steady, rws=roulette, rank = rankingowa, tournament = turniejowa
@@ -160,7 +163,7 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        crossover_type=crossover_type,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                       stop_criteria=["reach_0", "saturate_25"])
+                       stop_criteria=["reach_0", saturate])
 
 
 def run(tries):
@@ -175,6 +178,8 @@ def run(tries):
         timeResults["time"].append(round(end_time - start_time, 5))
         timeResults["numOfGenerations"].append(ga_copy.generations_completed)
         timeResults["fitnessValueBest"].append(solution_fitness)
+        if solution_fitness == 0:
+            print(makeBoardWithSoution(solution))
 
     avg = 0
     successful_runs_times = []
@@ -187,10 +192,14 @@ def run(tries):
     pprint.pprint(timeResults, width=200)
     print("\n")
 
-run(10)
+# run(10)
 
 #uruchomienie algorytmu
+start_time = time.time()
 ga_instance.run()
+end_time = time.time()
+print(end_time - start_time)
+
 
 #podsumowanie: najlepsze znalezione rozwiazanie (chromosom+ocena)
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
