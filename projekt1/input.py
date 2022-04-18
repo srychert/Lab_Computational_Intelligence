@@ -1,6 +1,7 @@
 import sys
 import tkinter as tk
 import json
+import re
 
 class SimpleTableInput(tk.Frame):
     def __init__(self, parent, rows, columns):
@@ -72,8 +73,13 @@ class Input(tk.Frame):
         key = int(max(puzzles.keys(), default=-1)) + 1
         puzzles[key] = self.table.get()
         json_str = json.dumps(puzzles)
+        splited = re.split("]],", json_str)
+        for i in range(len(splited)):
+            if i != len(splited) - 1:
+                splited[i] = splited[i] + "]],\n"
+        final = "".join(splited)
         with open("puzzles.json", "w") as f:
-            f.write(json_str)
+            f.write(final)
         sys.exit(0)
 
 
