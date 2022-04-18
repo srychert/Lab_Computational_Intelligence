@@ -1,21 +1,27 @@
+import argparse
+import concurrent.futures
+import copy
+import json
+import time
+
 import numpy as np
 import pygad
-import json
-import copy
-import time
-import pprint
+
 from DFS import DFS
 
+parser = argparse.ArgumentParser(description='flags for selecting the puzzle and the number of runs of the algorithm')
+parser.add_argument('--p', action="store", dest='p', default="0")
+parser.add_argument('--r', action="store", dest='r', default=0)
+args = parser.parse_args()
+
+# load puzzles from file
 puzzles = {}
 with open("puzzles.json", "r") as f:
     puzzles = json.load(f)
 
-# from 0 to 8
-board = np.array(puzzles["4"])
+# make a board for puzzle
+board = np.array(puzzles[args.p])
 
-#definiujemy parametry chromosomu
-#geny to liczby: -1 lub 0
-gene_space = [-1, 0]
 
 def makeBoardWithSoution(solution):
     board_c = copy.deepcopy(board)
@@ -23,11 +29,13 @@ def makeBoardWithSoution(solution):
     cords = list(zip(np_tuple[0], np_tuple[1]))
     for idx, value in enumerate(solution):
         board_c[cords[idx]] = value
+
     return board_c
+
 
 def rookSum(arr, idx):
     arr_1 = arr[:idx][::-1]
-    arr_2 = arr[idx+1:]
+    arr_2 = arr[idx + 1:]
     sum = 0
     for i in arr_1:
         if i == -1:
@@ -40,6 +48,7 @@ def rookSum(arr, idx):
         else:
             sum += 1
     return sum
+
 
 def whiteConnected(arr, idx):
     arr_1 = arr[:idx][::-1]
@@ -59,16 +68,22 @@ def whiteConnected(arr, idx):
 
     return (sides, sum)
 
+
 def whiteCellsPoints(x, idx, board_s):
     row = board_s[idx[0], :]
     column = board_s[:, idx[1]]
     points = 0
+    # only numbered cells
     if x != 0 and x != -1:
+        # sum the number of cells vertically and horizontally from this white cell until black cells or edge
         row_sum = rookSum(row, idx[1])
         col_sum = rookSum(column, idx[0])
+        # add itself to total
         total_sum = row_sum + col_sum + 1
+        # final result is absolute difference between cell value and sum
         points += abs(x - total_sum)
 
+    # check if empty cell is not cornered by black cells
     if x == 0:
         row_sides, row_sum = whiteConnected(row, idx[1])
         col_sides, col_sum = whiteConnected(column, idx[0])
@@ -79,16 +94,17 @@ def whiteCellsPoints(x, idx, board_s):
 
 
 def blackSum(arr, idx):
-    arr_2 = arr[idx+1:]
+    arr_2 = arr[idx + 1:]
     sum = 0
-    # if first value in array is -1 add 1
-    if len(arr_2) != 0 and arr_2[0] == -1:
-        sum += 1
+    if len(arr_2) != 0:
+        if arr_2[0] == -1:
+            sum += 1
+
     return sum
+
 
 def blackCellsPoints(x, idx, board_s):
     points = 0
-
     if x == -1:
         row = board_s[idx[0], :]
         column = board_s[:, idx[1]]
@@ -96,61 +112,60 @@ def blackCellsPoints(x, idx, board_s):
         points += blackSum(row, idx[1])
         points += blackSum(column, idx[0])
 
-    return points*2
+    return points * 2
 
 
-#definiujemy funkcję fitness
+# definiujemy funkcję fitness
 def fitness_func(solution, solution_idx):
+    # board for solution
     board_s = makeBoardWithSoution(solution)
     points = 0
+    # deep first search object
     dfs = DFS()
-
+    # find starting point for dfs
     firstA = np.argwhere(board_s != -1)[0]
     first = (firstA[0], firstA[1])
 
+    # calculate points
     for idx, x in np.ndenumerate(board_s):
         points -= whiteCellsPoints(x, idx, board_s)
         points -= blackCellsPoints(x, idx, board_s)
 
+    # check if there is only one island else give punishment points
     islands = dfs.getNumberOfIslands(board_s, first)
-    points -= islands - 1
+    points -= 2 ** (islands - 1) - 1
 
     return points
 
+
 fitness_function = fitness_func
 
-#ile chromsomów w populacji - tablic z -1 i 0
-#ile genow ma chromosom
+gene_space = [-1, 0]
+
+# population size
 sol_per_pop = board.shape[0] * board.shape[1] * 10
+# calc gene length form board
 num_genes = 0
 for i in board.flatten():
     if i == 0:
         num_genes += 1
-# print(num_genes)
 
-#ile wylaniamy rodzicow do "rozmanazania" 1/4 populacji
-#ile pokolen
-#ilu rodzicow zachowac (kilka procent)
 num_parents_mating = int(0.25 * sol_per_pop)
 num_generations = int(2 * sol_per_pop)
 keep_parents = int(0.01 * sol_per_pop)
 s = int(0.02 * num_generations)
-saturate = "saturate_{s}".format(s = 15 if s < 15 else s)
-print(sol_per_pop, num_genes, num_parents_mating, num_generations, keep_parents, saturate)
+saturate = "saturate_{s}".format(s=15 if s < 15 else s)
 
-#jaki typ selekcji rodzicow?
-#sss = steady, rws=roulette, rank = rankingowa, tournament = turniejowa
+# sss = steady, rws=roulette, rank = rankingowa, tournament = turniejowa
 parent_selection_type = "sss"
 
-#w il =u punktach robic krzyzowanie?
 crossover_type = "single_point"
 
-#mutacja ma dzialac na ilu procent genow?
-#trzeba pamietac ile genow ma chromosom
-mutation_type = "random"  # zamiana losowego genu
-mutation_percent_genes = round(120 / num_genes, 3)  # razy długość chromosomu troche powyżej 100
+mutation_type = "random"
+# small boards - smaller mutation percent and bigger for bigger boards
+mutation_percent_genes = 120 / num_genes if num_genes <= 50 else 100 * (2 / num_genes)
 
-#inicjacja algorytmu z powyzszymi parametrami wpisanymi w atrybuty
+# make algorithm instance
 ga_instance = pygad.GA(gene_space=gene_space,
                        gene_type=int,
                        num_generations=num_generations,
@@ -166,47 +181,52 @@ ga_instance = pygad.GA(gene_space=gene_space,
                        stop_criteria=["reach_0", saturate])
 
 
-def run(tries):
-    timeResults = {"time": [], "numOfGenerations": [], "fitnessValueBest": []}
-    for x in range(tries):
-        ga_copy = copy.deepcopy(ga_instance)
-        # start time
-        start_time = time.time()
-        ga_copy.run()
-        end_time = time.time()
-        solution, solution_fitness, solution_idx = ga_copy.best_solution()
-        timeResults["time"].append(round(end_time - start_time, 5))
-        timeResults["numOfGenerations"].append(ga_copy.generations_completed)
-        timeResults["fitnessValueBest"].append(solution_fitness)
-        if solution_fitness == 0:
-            print(makeBoardWithSoution(solution))
+# function for running algorithm
+# x is used for multiprocessing; see in main
+def runGA(x):
+    ga_copy = copy.deepcopy(ga_instance)
 
-    avg = 0
-    successful_runs_times = []
-    for idx, fit in enumerate(timeResults["fitnessValueBest"]):
-        if fit == 0:
-            successful_runs_times.append(timeResults["time"][idx])
+    start_time = time.time()
+    ga_copy.run()
+    end_time = time.time()
 
-    avg = avg if len(successful_runs_times) == 0 else round(sum(successful_runs_times) / len(successful_runs_times), 5)
-    timeResults["avgOfSuccessfulRuns"] = avg
-    pprint.pprint(timeResults, width=200)
-    print("\n")
+    resutlTime = round(end_time - start_time, 5)
 
-# run(10)
+    solution, solution_fitness, generations_completed = ga_copy.best_solution()
 
-#uruchomienie algorytmu
-start_time = time.time()
-ga_instance.run()
-end_time = time.time()
-print(end_time - start_time)
+    if solution_fitness == 0:
+        print(makeBoardWithSoution(solution))
+
+    return {"fitness": solution_fitness, "time": resutlTime, "gen_com": generations_completed, "solution": solution}
 
 
-#podsumowanie: najlepsze znalezione rozwiazanie (chromosom+ocena)
-solution, solution_fitness, solution_idx = ga_instance.best_solution()
-print("Parameters of the best solution : {solution}".format(solution=solution))
-print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+if __name__ == "__main__":
 
-print(makeBoardWithSoution(solution))
+    def run(tries):
+        print("sol_per_pop:", sol_per_pop, "num_genes:", num_genes, "num_parents_mating:",
+              num_parents_mating, "num_generations:",
+              num_generations, "keep_parents:", keep_parents, saturate)
 
-# wyswietlenie wykresu: jak zmieniala sie ocena na przestrzeni pokolen
-ga_instance.plot_fitness()
+        results = []
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            # make list of len = tries
+            l = list(range(0, tries))
+            # run tries number of processes
+            pool = executor.map(runGA, l)
+            for res in pool:
+                results.append(res)
+
+        succesTimes = []
+        for res in results:
+            r = {i: res[i] for i in res if i != 'solution'}
+            print(r)
+            if res["fitness"] == 0:
+                succesTimes.append(res["time"])
+
+        if len(succesTimes) > 0:
+            print(np.average(np.array(succesTimes)))
+        else:
+            print("No success runs!")
+
+
+    run(int(args.r))
