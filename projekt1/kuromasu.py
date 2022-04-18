@@ -217,14 +217,18 @@ if __name__ == "__main__":
                 results.append(res)
 
         succesTimes = []
+        successGen = []
         for res in results:
             r = {i: res[i] for i in res if i != 'solution'}
             print(r)
             if res["fitness"] == 0:
                 succesTimes.append(res["time"])
+                successGen.append(res["gen_com"])
 
         if len(succesTimes) > 0:
-            print(np.average(np.array(succesTimes)))
+            print("average time of successful runs:                 ", np.average(np.array(succesTimes)))
+            print("average generation completed of successful runs: ", np.average(np.array(successGen)))
+            print("success: {s}%".format(s=len(succesTimes) / int(args.r) * 100))
         else:
             print("No success runs!")
 
