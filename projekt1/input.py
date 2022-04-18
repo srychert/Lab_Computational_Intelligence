@@ -1,3 +1,4 @@
+import argparse
 import sys
 import tkinter as tk
 import json
@@ -84,5 +85,9 @@ class Input(tk.Frame):
 
 
 root = tk.Tk()
-Input(root, 9, 9).pack(side="top", fill="both", expand=True)
+parser = argparse.ArgumentParser(description='size for board')
+parser.add_argument('--w', action="store", dest='w', default=4)
+parser.add_argument('--h', action="store", dest='h', default=4)
+args = parser.parse_args()
+Input(root, int(args.w), int(args.h)).pack(side="top", fill="both", expand=True)
 root.mainloop()
