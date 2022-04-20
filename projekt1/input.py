@@ -52,6 +52,8 @@ class SimpleTableInput(tk.Frame):
 
         try:
             f = int(P)
+            if f < 2:
+                return False
         except ValueError:
             self.bell()
             return False
