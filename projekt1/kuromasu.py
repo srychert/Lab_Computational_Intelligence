@@ -38,12 +38,12 @@ def rookSum(arr, idx):
     arr_2 = arr[idx + 1:]
     sum = 0
     for i in arr_1:
-        if i == -1:
+        if i == 1:
             break
         else:
             sum += 1
     for i in arr_2:
-        if i == -1:
+        if i == 1:
             break
         else:
             sum += 1
@@ -58,12 +58,12 @@ def whiteConnected(arr, idx):
 
     if len(arr_1) != 0:
         sides += 1
-        if arr_1[0] == -1:
+        if arr_1[0] == 1:
             sum += 1
 
     if len(arr_2) != 0:
         sides += 1
-        if arr_2[0] == -1:
+        if arr_2[0] == 1:
             sum += 1
 
     return (sides, sum)
@@ -74,7 +74,7 @@ def whiteCellsPoints(x, idx, board_s):
     column = board_s[:, idx[1]]
     points = 0
     # only numbered cells
-    if x != 0 and x != -1:
+    if x != 0 and x != 1:
         # sum the number of cells vertically and horizontally from this white cell until black cells or edge
         row_sum = rookSum(row, idx[1])
         col_sum = rookSum(column, idx[0])
@@ -97,7 +97,7 @@ def blackSum(arr, idx):
     arr_2 = arr[idx + 1:]
     sum = 0
     if len(arr_2) != 0:
-        if arr_2[0] == -1:
+        if arr_2[0] == 1:
             sum += 1
 
     return sum
@@ -105,7 +105,7 @@ def blackSum(arr, idx):
 
 def blackCellsPoints(x, idx, board_s):
     points = 0
-    if x == -1:
+    if x == 1:
         row = board_s[idx[0], :]
         column = board_s[:, idx[1]]
         # number of black cells adjacent to right and down to this black cell
@@ -123,7 +123,7 @@ def fitness_func(solution, solution_idx):
     # deep first search object
     dfs = DFS()
     # find starting point for dfs
-    firstA = np.argwhere(board_s != -1)[0]
+    firstA = np.argwhere(board_s != 1)[0]
     first = (firstA[0], firstA[1])
 
     # calculate points
@@ -140,7 +140,7 @@ def fitness_func(solution, solution_idx):
 
 fitness_function = fitness_func
 
-gene_space = [-1, 0]
+gene_space = [1, 0]
 
 # population size
 sol_per_pop = board.shape[0] * board.shape[1] * 10
