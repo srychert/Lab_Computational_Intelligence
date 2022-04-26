@@ -1,4 +1,4 @@
 https://www.math.edu.pl/kuromasu
-łatwy: 1, 2, 9, 24
-średni: 1, 14, 16, 21
+łatwy: 1, 9, 24
+średni: 1, 14, 23, 16
 trudny: 1
