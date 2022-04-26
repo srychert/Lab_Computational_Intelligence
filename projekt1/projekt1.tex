@@ -7,7 +7,7 @@
 \usepackage{caption}
 \usepackage{graphicx}
 \usepackage{float}
-
+\usepackage{url}
 \usepackage{minted}
 
 \newcommand*{\GridSize}{4}
@@ -20,7 +20,7 @@
 }%
 
 
-\title{Rozwiązywanie łamigłówiki Kuromasu algorytmem genetycznym}
+\title{Rozwiązywanie łamigłówki Kuromasu algorytmem genetycznym}
 \author{Sebastian Rychert}
 \date{April 2022}
 
@@ -186,7 +186,7 @@ Jest to główny element algorytmu który musimy zdefiniować. Na podstawie wyni
 \section{Wyniki}
 
 \subsection{Sposób pomiaru}
-Algorytm został uruchomiony na 10 różnych łamigłówkach o rosnącym stopniu trudności; zaczynając na planszy o wymiarach 4x4, a kończąc na 11x11. Każda plansza była poddana próbie rozwiązania 10 razy. Dla każdej planszy zapisany został procent sukcesu oraz średni czas rozwiązania. Próby zakończone porażką, to znaczy wartością fitness różną od 0, zostały pominięte w średniej czasu.\\
+Algorytm został uruchomiony na 10 różnych łamigłówkach o rosnącym stopniu trudności; zaczynając na planszy o wymiarach 4x4, a kończąc na 11x11. Każda plansza była poddana próbie rozwiązania 10 razy. Dla każdej planszy zapisany został procent sukcesu, średni czas rozwiązania oraz średni numer generacji rozwiązania. Próby zakończone porażką, to znaczy wartością fitness różną od 0, zostały pominięte.\\
 \newline
 Aby zwiększyć predkość przeprowadzania testów została użyta technika przetwarzania wieloprocesorowego.
 
@@ -233,5 +233,14 @@ puzzle               &                             &                            
   \makebox[\textwidth]{\includegraphics[width=\linewidth]{line-graph-czas.png}}
 \end{center}
 
+\subsection{Podsumowanie}
+Przeprowadzone testy wskazują iż algorytm znajduje rozwiązanie w mniejszych oraz średnich planszach, ale nie radzi sobie już z większymi planszami. Punktem diametralnego spadku procentu sukcesu wydaje się być długość chromosomu równa 60. Algorytm powyżej tej długości o wiele częściej wpada w minima lokalne, które nie pasują ostatecznie do prawidłowego rozwiązania.\\
+Wyniki planszy o id "8" sugerują, iż jedynie początkowa "szczęśliwa" kombinacja jest wstanie doprowadzić do rozwiązania na większej planszy - świadczy o tym bardzo mała liczba generacji równa 8.
+
+\begin{thebibliography}{9}
+\bibitem{link_latlng_00} Wikipedia strona Kuromasu \url{https://en.wikipedia.org/wiki/Kuromasu}
+\bibitem{link_latlng_00} PyGad Dokumentacja  \url{https://pygad.readthedocs.io/en/latest/}
+\bibitem{link_latlng_00} Katalog łamigłówek \url{https://www.math.edu.pl/kuromasu}
+\end{thebibliography}
 
 \end{document}
