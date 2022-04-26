@@ -144,7 +144,7 @@ gene_space = [1, 0]
 
 # population size
 sol_per_pop = board.shape[0] * board.shape[1] * 10
-# calc gene length form board
+# calc gene length from board
 num_genes = 0
 for i in board.flatten():
     if i == 0:
@@ -202,16 +202,16 @@ def runGA(x):
 
 if __name__ == "__main__":
 
-    def run(tries):
+    def run(runs):
         print("sol_per_pop:", sol_per_pop, "num_genes:", num_genes, "num_parents_mating:",
               num_parents_mating, "num_generations:",
               num_generations, "keep_parents:", keep_parents, saturate)
 
         results = []
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            # make list of len = tries
-            l = list(range(0, tries))
-            # run tries number of processes
+            # make list of len = runs
+            l = list(range(0, runs))
+            # run the algorithm for the number of processes equal to "runs"
             pool = executor.map(runGA, l)
             for res in pool:
                 results.append(res)
