@@ -23,8 +23,8 @@ for i in range(len):
         good_predictions = good_predictions + 1
 
 
-print(good_predictions) # 11
-print(good_predictions/len*100, "%") # 24.4 %
+print(good_predictions) # 42
+print(good_predictions/len*100, "%") # 93.3 %
 
 # print(train_set)
 
