@@ -6,6 +6,7 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -104,3 +105,6 @@ print(bow)
 
 with open('TFIDF.md', 'w') as f:
     f.write(bow.to_markdown())
+
+cosine_sim_matrix = cosine_similarity([tfdf.iloc[0], tfdf.iloc[1], tfdf.iloc[2]])
+print(cosine_sim_matrix)
