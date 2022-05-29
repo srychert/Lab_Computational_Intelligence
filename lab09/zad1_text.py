@@ -1,6 +1,12 @@
+import matplotlib.pyplot as plt
 import nltk
-from nltk.tokenize import word_tokenize
+import pandas as pd
+import seaborn as sns
 from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize import word_tokenize
+from wordcloud import WordCloud
+
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -11,53 +17,65 @@ text = ''
 with open("article.txt", "r") as file:
     text = file.read()
 
-tokenized_word=word_tokenize(text)
-print(tokenized_word)
-print(len(tokenized_word))
+tokenized_words = word_tokenize(text)
+print("Tokenized words length:", len(tokenized_words))
 
 
-stop_words=set(stopwords.words("english"))
-print(stop_words)
-
-filtered_word=[]
-for w in tokenized_word:
-    if w not in stop_words:
-        filtered_word.append(w)
-
-print("Filterd Sentence:",filtered_word)
-print(len(filtered_word))
+def filter_words(words, stop_words):
+    filtered_words = []
+    for w in words:
+        if w not in stop_words:
+            filtered_words.append(w)
+    return filtered_words
 
 
-from nltk.stem.wordnet import WordNetLemmatizer
-lem = WordNetLemmatizer()
+stop_words = set(stopwords.words("english"))
+filtered_words = filter_words(tokenized_words, stop_words)
+print("Filtered words length:", len(filtered_words))
 
-from nltk.stem.porter import PorterStemmer
-stem = PorterStemmer()
+punctuation = [",", ".", ":", "'", "—", "[", "]", "(", ")", "{", "}", "!", "?", "’", "‘", "“", "”"]
+for i in punctuation:
+    stop_words.add(i)
 
-stemmead = []
+filtered_words = filter_words(tokenized_words, stop_words)
+print("Words length withour punctuation:", len(filtered_words))
+print(filtered_words)
 
-for word in filtered_word:
-    # lem.lemmatize(word, "v")
-    stemmead.append(stem.stem(word))
+# from nltk.stem.wordnet import WordNetLemmatizer
+# lem = WordNetLemmatizer()
 
-# print("Lemmatized Word:",lem.lemmatize(filtered_word,"v"))
-# print("Stemmed Word:",stem.stem(filtered_word))
+stemmer = SnowballStemmer("english")
 
-print(len(stemmead))
+stemmed = []
+for word in filtered_words:
+    stemmed.append(stemmer.stem(word))
 
+print("Length od stemmed words:", len(stemmed))
 
-# from sklearn.feature_extraction.text import CountVectorizer
-# from nltk.tokenize import RegexpTokenizer
-#
-# #tokenizer to remove unwanted elements from out data like symbols and numbers
-# token = RegexpTokenizer(r'[a-zA-Z0-9]+')
-# cv = CountVectorizer(lowercase=True,stop_words='english',ngram_range = (1,1),tokenizer = token.tokenize)
-# text_counts= cv.fit_transform(data['Phrase'])
+fd = nltk.FreqDist(stemmed)
 
-fd = nltk.FreqDist(stemmead)
+## Creating FreqDist for whole BoW, keeping the 20 most common tokens
+all_fdist = fd.most_common(20)
 
-print(fd)
+## Conversion to Pandas series via Python Dictionary for easier plotting
+all_fdist = pd.Series(dict(all_fdist))
 
-fd.most_common(3)
-fd.tabulate(3)
+## Setting figure, ax into variables
+fig, ax = plt.subplots(figsize=(10, 10))
+
+## Seaborn plotting using Pandas attributes + xtick rotation for ease of viewing
+all_plot = sns.barplot(x=all_fdist.index, y=all_fdist.values, ax=ax)
+plt.xticks(rotation=30)
+plt.show()
+plt.close()
+
+# Generate a word cloud image
+wordcloud = WordCloud(width=800, height=400).generate(' '.join(stemmed))
+# lower max_font_size
+# wordcloud = WordCloud(width=800, height=400, max_font_size=60).generate(' '.join(stemmed))
+plt.figure(figsize=(15, 8))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+plt.close()
 
