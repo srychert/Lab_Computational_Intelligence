@@ -54,8 +54,8 @@ print("Length od stemmed words:", len(stemmed))
 
 fd = nltk.FreqDist(stemmed)
 
-## Creating FreqDist for whole BoW, keeping the 20 most common tokens
-all_fdist = fd.most_common(20)
+## Creating FreqDist for whole BoW, keeping the 10 most common tokens
+all_fdist = fd.most_common(10)
 
 ## Conversion to Pandas series via Python Dictionary for easier plotting
 all_fdist = pd.Series(dict(all_fdist))
@@ -70,10 +70,10 @@ plt.show()
 plt.close()
 
 # Generate a word cloud image
-wordcloud = WordCloud(width=800, height=400).generate(' '.join(stemmed))
+wordcloud = WordCloud(width=800, height=450).generate(' '.join(stemmed))
 # lower max_font_size
 # wordcloud = WordCloud(width=800, height=400, max_font_size=60).generate(' '.join(stemmed))
-plt.figure(figsize=(15, 8))
+plt.figure(figsize=(16, 9))
 plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis("off")
 plt.show()
