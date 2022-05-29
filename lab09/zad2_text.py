@@ -5,6 +5,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -41,7 +42,6 @@ stop_words = set(stopwords.words("english"))
 article1_filtered = filter_words(article1_tokenized, stop_words)
 article2_filtered = filter_words(article2_tokenized, stop_words)
 article3_filtered = filter_words(article3_tokenized, stop_words)
-print(article1_filtered)
 
 
 def stem_words(filtered_words):
@@ -76,7 +76,31 @@ df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names_out())
 df.index = ['article1', 'article2', 'article3']
 # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
 #     print(df)
+print("DTM:")
 print(df)
 
 with open('DTM.md', 'w') as f:
     f.write(df.to_markdown())
+
+df_sum = df.sum(axis=1)
+tfdf = df.copy()
+
+for index, row in tfdf.iterrows():
+    tfdf.loc[index] = [x / df_sum[index] for x in row]
+
+print("TFDF:")
+print(tfdf)
+
+with open('TF.md', 'w') as f:
+    f.write(tfdf.to_markdown())
+
+tfvec = TfidfVectorizer()
+tdf = tfvec.fit_transform(docs)
+bow = pd.DataFrame(tdf.toarray(), columns=tfvec.get_feature_names_out())
+bow.index = ['article1', 'article2', 'article3']
+
+print("TFIDF:")
+print(bow)
+
+with open('TFIDF.md', 'w') as f:
+    f.write(bow.to_markdown())
