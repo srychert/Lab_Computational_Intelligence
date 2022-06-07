@@ -27,8 +27,6 @@ for tweet in tweets:
 
     text.extend(filtered2)
 
-print(text)
-
 fd = nltk.FreqDist(text)
 
 ## Creating FreqDist for whole BoW, keeping the 10 most common tokens
