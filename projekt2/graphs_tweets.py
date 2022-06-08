@@ -7,6 +7,9 @@ import seaborn as sns
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from wordcloud import WordCloud
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+nltk.download('vader_lexicon')
 
 from util import filter_words
 from util import lemmatize_words
@@ -17,17 +20,28 @@ with open("tweets.json", "r") as f:
     tweets = json.loads(f.read())
 
 text = []
+positive = []
+negative = []
 stop_words = set(stopwords.words("english"))
 
 for tweet in tweets:
-    tokenized = word_tokenize(tweet["content"])
-    filtered = filter_words(tokenized, stop_words)
-    lem = lemmatize_words(filtered)
-    filtered2 = filter(lambda t: t != 'http', lem)
+    text.extend(tweet["content"])
 
-    text.extend(filtered2)
+tokenized = word_tokenize(''.join(text))
+tokenized = list(map(lambda word: word.lower().strip(), tokenized))
+filtered = filter_words(tokenized, stop_words)
+lem = lemmatize_words(filtered)
+final = list(filter(lambda t: t != 'http', lem))
 
-fd = nltk.FreqDist(text)
+print(final)
+
+# sid = SentimentIntensityAnalyzer()
+# ss = sid.polarity_scores(''.join(final))
+#
+# if ss["neg"] != 0.0:
+#     print(ss)
+
+fd = nltk.FreqDist(final)
 
 ## Creating FreqDist for whole BoW, keeping the 10 most common tokens
 all_fdist = fd.most_common(10)
@@ -45,7 +59,7 @@ plt.show()
 plt.close()
 
 # Generate a word cloud image
-wordcloud = WordCloud(width=800, height=450).generate(' '.join(text))
+wordcloud = WordCloud(width=800, height=450).generate(' '.join(final))
 # lower max_font_size
 # wordcloud = WordCloud(width=800, height=400, max_font_size=60).generate(' '.join(stemmed))
 plt.figure(figsize=(16, 9))
