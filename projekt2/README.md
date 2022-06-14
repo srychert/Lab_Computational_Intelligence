@@ -51,6 +51,15 @@ ss_all = sid.polarity_scores(' '.join(text))
 
 <p>Narzędzie zakwalifikowało całość tweetów jako wypowiedzi negatywne na tematy związane z hasztagami #war #ukraine</p>
 
+### Słowa pozytywne
+![ScreenShot](graphs/FreqDistPos.png) <br/>
+
+### Słowa negatywne
+![ScreenShot](graphs/FreqDistNeg.png) <br/>
+
+### Słowa neutralne
+![ScreenShot](graphs/FreqDistNeu.png) <br/>
+
 
 ## Wydarzenia a liczba tweetów
 <p>Przeprowadzono zliczenie ilości tweetów w odstępach czasowych: "dzień", "tydzień", "miesiąc". <br />
@@ -74,8 +83,7 @@ ss_all = sid.polarity_scores(' '.join(text))
 - 02: 19314
 - 05: 17888
 - 06: 5274
-- 01: 1236}
+- 01: 1236
 
-Wniosek: Najwięcej tweetów pojawiło się w momencie rozpoczącie inwazji Rosji na Ukrainę dnia 24 lutego 2022 roku.
-
+<b>Wniosek: Najwięcej tweetów pojawiło się w momencie rozpoczęcia inwazji Rosji na Ukrainę dnia 24 lutego 2022 roku.</b>
 

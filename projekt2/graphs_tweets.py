@@ -87,6 +87,8 @@ ss = sid.polarity_scores(' '.join(text))
 
 print(ss)
 
+# l2 = [x.split() for x in neutral_list]
+# l3 = [item for sublist in l2 for item in sublist]
 fd = nltk.FreqDist(text)
 
 ## Creating FreqDist for whole BoW, keeping the 10 most common tokens
