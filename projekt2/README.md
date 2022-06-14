@@ -30,8 +30,8 @@ lem = lemmatize_words(filtered)
 ## Rozkład częstotliwości słów
 <p>Odpowiednio przygotowane tweety zostały połączone w jeden duży tekst, w którym sprawdzony częstotliwość występowania słów. Poniższy wykres przestawia 10 najczęściej pojawiających się słów.</p>
 
-![ScreenShot](graphs/FreqDistAll.PNG) <br/>
-![ScreenShot](graphs/WordCloud.PNG) <br/>
+![ScreenShot](projekt2/graphs/FreqDistAll.PNG) <br/>
+![ScreenShot](projekt2/graphs/WordCloud.PNG) <br/>
 
 ## Analiza opinii
 <p>Przeprowadzono analizę opinii ("sentymentu") z wykorzystaniem modułu Vader z biblioteki nltk. Analizie poddany został każdy twett z osobna jak i całość tekstu. </p>
