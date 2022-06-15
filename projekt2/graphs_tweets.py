@@ -37,6 +37,10 @@ for i in punctuation:
 sid = SentimentIntensityAnalyzer()
 
 for tweet in tweets:
+
+    # if (tweet["date"][5:7] != "06"):
+    #     continue
+
     content = tweet["content"]
     string_encode = content.encode("ascii", "ignore")
     string_decode = string_encode.decode()
