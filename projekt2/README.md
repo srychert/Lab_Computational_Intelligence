@@ -61,6 +61,30 @@ ss_all = sid.polarity_scores(' '.join(text))
 ![ScreenShot](graphs/FreqDistNeu.png) <br/>
 
 
+## Opinie w ramach czasowych
+<p>Zmiany oceny opinii w podzial na miesiące</p>
+
+- Styczeń:
+    - Neg: 663, Neu: 251, Pos: 322
+    - {'neg': 0.25, 'neu': 0.623, 'pos': 0.127, 'compound': -1.0}
+- Luty:
+    - Neg: 9410, Neu: 4502, Pos: 5402
+    - {'neg': 0.25, 'neu': 0.587, 'pos': 0.163, 'compound': -1.0}
+- Marzec:
+    - Neg: 20525, Neu: 9509, Pos: 10589
+    - {'neg': 0.249, 'neu': 0.613, 'pos': 0.138, 'compound': -1.0}
+- Kwiecień:
+    - Neg: 13421, Neu: 6434, Pos: 6655
+    - {'neg': 0.236, 'neu': 0.635, 'pos': 0.129, 'compound': -1.0}
+- Maj:
+    - Neg: 9091, Neu: 4053, Pos: 4744
+    - {'neg': 0.232, 'neu': 0.638, 'pos': 0.13, 'compound': -1.0}
+- Czerwiec:
+    - Neg: 2809, Neu: 1045, Pos: 1420
+    - {'neg': 0.233, 'neu': 0.628, 'pos': 0.139, 'compound': -1.0}
+
+<b>Widać iż ogólna ocena nie zmienia się w czasie, lecz występują niewielkie fluktuacje w poszczegolnych kategoriach.</b>
+
 ## Wydarzenia a liczba tweetów
 <p>Przeprowadzono zliczenie ilości tweetów w odstępach czasowych: "dzień", "tydzień", "miesiąc". <br />
 </p>
@@ -85,5 +109,5 @@ ss_all = sid.polarity_scores(' '.join(text))
 - 06: 5274
 - 01: 1236
 
-<b>Wniosek: Najwięcej tweetów pojawiło się w momencie rozpoczęcia inwazji Rosji na Ukrainę dnia 24 lutego 2022 roku.</b>
+<b>Wniosek: Najwięcej tweetów danego dnia pojawiło się w momencie rozpoczęcia inwazji Rosji na Ukrainę 24 lutego 2022 roku. Ogólne maksimum liczby nowych tweetów przypada na okres od połowy lutego do końca marca.</b>
 
