@@ -3,5 +3,5 @@ Inteligencja obliczeniowa
 
 Repository for the purpose of learning about intelligent algorithms as part of a university course.
 Includes two projects:
-- [Solving kuromasu puzzles through a genetic algorithma link](https://github.com/srychert/Lab_Computational_Intelligence/blob/main/projekt1/projekt1.pdf)
-- [Performing text analysis on the example of tweets](https://github.com/srychert/Lab_Computational_Intelligence/tree/main/projekt2)
+- [Solving kuromasu puzzles through a genetic algorithm](projekt1.pdf)
+- [Performing text analysis on the example of tweets](/tree/main/projekt2)
